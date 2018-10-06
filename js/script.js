@@ -10,11 +10,11 @@ function loadStreetView(address) {
     });
 }
 
-function loadNytimesArticles() {
+function loadNytimesArticles(city) {
     $.get("keys.json", function (data) {
         var nyTimesApiKey = data['nytimes-api-key'];
-        var nytimesApiUrl = 'https://api.nytimes.com/svc/search/v2/articlesearch.json?' +
-            'api-key=' + nyTimesApiKey;
+        var nytimesApiUrl = 'https://api.nytimes.com/svc/search/v2/articlesearch.json?q=' +
+            city + '&sort=newest&api-key=' + nyTimesApiKey;
         $.getJSON(nytimesApiUrl, function (data) {
             var items = [];
             $.each(data['response']['docs'], function (index, article) {
@@ -28,6 +28,8 @@ function loadNytimesArticles() {
                     "</li>");
                 console.log("hi");
             });
+
+            $('#nytimes-header').text('New York Times Articles About ' + city);
             $("#nytimes-articles").append(items.join(""));
         });
     });
@@ -51,7 +53,7 @@ function loadData() {
     $nytElem.text("");
 
     // NY Times AJAX Request
-    loadNytimesArticles();
+    loadNytimesArticles($('#city').val());
 
     return false;
 }
