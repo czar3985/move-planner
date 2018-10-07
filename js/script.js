@@ -40,6 +40,10 @@ function loadNytimesArticles(city) {
 }
 
 function loadWikipediaLinks(city) {
+    var timeout = setTimeout(function () {
+        $('#wikipedia-header').text('Wikipedia links could not be loaded');
+    }, 5000);
+
     $.ajax({
         url: 'https://en.wikipedia.org/w/api.php?format=json&action=opensearch&search=' + city,
         dataType: "jsonp",
@@ -53,6 +57,8 @@ function loadWikipediaLinks(city) {
             });
             $('#wikipedia-header').text('Wikipedia Links About ' + city);
             $("#wikipedia-links").append(items.join(""));
+
+            clearTimeout(timeout);
         }
     });
 }
