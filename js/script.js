@@ -27,8 +27,7 @@ function loadNytimesArticles(city) {
                     article['snippet'] +
                     "</p>" +
                     "</li>");
-                console.log("hi");
-            });
+             });
 
             $('#nytimes-header').text('New York Times Articles About ' + city);
             $("#nytimes-articles").append(items.join(""));
@@ -40,25 +39,46 @@ function loadNytimesArticles(city) {
     });
 }
 
+function loadWikipediaLinks(city) {
+    $.ajax({
+        url: 'https://en.wikipedia.org/w/api.php?format=json&action=opensearch&search=' + city,
+        dataType: "jsonp",
+        success: function (response) {
+            var items = [];
+            articles = response[1];
+            $.each(articles, function (index, article) {
+                items.push("<li>" +
+                    "<a href='https://en.wikipedia.org/wiki/" + article + "'>" +
+                    article + "</a>"+"</li>");
+            });
+            $('#wikipedia-header').text('Wikipedia Links About ' + city);
+            $("#wikipedia-links").append(items.join(""));
+        }
+    });
+}
+
 function loadData() {
 
-    var $body = $('body');
     var $wikiElem = $('#wikipedia-links');
-    var $nytHeaderElem = $('#nytimes-header');
     var $nytElem = $('#nytimes-articles');
     var $greeting = $('#greeting');
-    var address = $('#street').val() + ', ' + $('#city').val();
 
-    $greeting.text('You plan to live at ' + address + '.');
+    var street = $('#street').val();
+    var city = $('#city').val();
 
-    loadStreetView(address);
+    $greeting.text('You plan to live at ' + street + ', ' + city + '.');
+
+    loadStreetView(street + ', ' + city);
 
     // clear out old data before new request
     $wikiElem.text("");
     $nytElem.text("");
 
     // NY Times AJAX Request
-    loadNytimesArticles($('#city').val());
+    loadNytimesArticles(city);
+
+    // Wikipedia AJAX Request
+    loadWikipediaLinks(city);
 
     return false;
 }
