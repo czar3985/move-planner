@@ -15,6 +15,7 @@ function loadNytimesArticles(city) {
         var nyTimesApiKey = data['nytimes-api-key'];
         var nytimesApiUrl = 'https://api.nytimes.com/svc/search/v2/articlesearch.json?q=' +
             city + '&sort=newest&api-key=' + nyTimesApiKey;
+
         $.getJSON(nytimesApiUrl, function (data) {
             var items = [];
             $.each(data['response']['docs'], function (index, article) {
@@ -31,7 +32,11 @@ function loadNytimesArticles(city) {
 
             $('#nytimes-header').text('New York Times Articles About ' + city);
             $("#nytimes-articles").append(items.join(""));
+        }).error(function () {
+            $('#nytimes-header').text('New York Times articles could not be loaded');
         });
+    }).error(function () {
+        $('#nytimes-header').text('New York Times articles could not be loaded');
     });
 }
 
